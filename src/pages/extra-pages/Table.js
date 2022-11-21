@@ -1,8 +1,6 @@
 // project import
 import MainCard from '../../components/MainCard';
 
-// ==============================|| SAMPLE PAGE ||============================== //
-
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';

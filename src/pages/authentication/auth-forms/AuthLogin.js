@@ -179,6 +179,7 @@ const AuthLogin = () => {
                                         type="submit"
                                         variant="contained"
                                         color="primary"
+                                        data-testid="login-button"
                                         onClick={handleLoginClick}
                                     >
                                         Login

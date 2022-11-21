@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {act, fireEvent, render, screen, waitFor} from "@testing-library/react";
 import Login from "./Login";
 
 jest.mock("axios", () => ({
@@ -105,7 +105,9 @@ test("loading should be rendered when click", () => {
 
   fireEvent.change(usernameInputEl, { target: { value: testValue } });
   fireEvent.change(passwordInputEl, { target: { value: testValue } });
-  fireEvent.click(buttonEl);
+  act(() => {
+    fireEvent.click(buttonEl);
+  })
 
   expect(buttonEl).toHaveTextContent(/please wait/i);
 });
@@ -120,7 +122,9 @@ test("loading should not be rendered after fetching", async () => {
 
   fireEvent.change(usernameInputEl, { target: { value: testValue } });
   fireEvent.change(passwordInputEl, { target: { value: testValue } });
-  fireEvent.click(buttonEl);
+  act(() => {
+    fireEvent.click(buttonEl);
+  })
 
   await waitFor(() => expect(buttonEl).not.toHaveTextContent(/please wait/i));
 });
@@ -135,7 +139,9 @@ test("user should be rendered after fetching", async () => {
 
   fireEvent.change(usernameInputEl, { target: { value: testValue } });
   fireEvent.change(passwordInputEl, { target: { value: testValue } });
-  fireEvent.click(buttonEl);
+  act(() => {
+    fireEvent.click(buttonEl);
+  })
 
   const userItem = await screen.findByText("John");
 
