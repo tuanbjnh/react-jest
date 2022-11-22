@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -33,9 +33,9 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = () => {
-    const [checked, setChecked] = React.useState(false);
+    const [checked, setChecked] = useState(false);
 
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleClickShowPassword = () => {
@@ -46,17 +46,17 @@ const AuthLogin = () => {
         event.preventDefault();
     };
 
-    const handleLoginClick = async (event) => {
-        event.preventDefault();
+    const handleLoginSubmit = async (values) => {
         const id = Math.floor(Math.random() * 10) + 1;
         axios({
             method: 'GET',
             url: `https://jsonplaceholder.typicode.com/users/${id}`
         })
             .then((res) => {
+                res.data.username = values.email;
                 const userInfo = JSON.stringify(res.data);
                 localStorage.setItem('userinfo', userInfo);
-                navigate('/');
+                navigate('/dashboard');
             })
             .catch((error) => {
                 console.log(error);
@@ -67,8 +67,8 @@ const AuthLogin = () => {
         <>
             <Formik
                 initialValues={{
-                    email: 'ntbinh@react.com',
-                    password: '123456',
+                    email: '',
+                    password: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
@@ -79,6 +79,7 @@ const AuthLogin = () => {
                     try {
                         setStatus({ success: false });
                         setSubmitting(false);
+                        await handleLoginSubmit(values)
                     } catch (err) {
                         setStatus({ success: false });
                         setErrors({ submit: err.message });
@@ -104,7 +105,7 @@ const AuthLogin = () => {
                                         error={Boolean(touched.email && errors.email)}
                                     />
                                     {touched.email && errors.email && (
-                                        <FormHelperText error id="standard-weight-helper-text-email-login">
+                                        <FormHelperText error data-testid="error-mess-email" id="standard-weight-helper-text-email-login">
                                             {errors.email}
                                         </FormHelperText>
                                     )}
@@ -138,7 +139,7 @@ const AuthLogin = () => {
                                         placeholder="Enter password"
                                     />
                                     {touched.password && errors.password && (
-                                        <FormHelperText error id="standard-weight-helper-text-password-login">
+                                        <FormHelperText error data-testid="error-mess-password" id="standard-weight-helper-text-password-login">
                                             {errors.password}
                                         </FormHelperText>
                                     )}
@@ -180,7 +181,6 @@ const AuthLogin = () => {
                                         variant="contained"
                                         color="primary"
                                         data-testid="login-button"
-                                        onClick={handleLoginClick}
                                     >
                                         Login
                                     </Button>

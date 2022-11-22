@@ -1,6 +1,7 @@
 import {act, fireEvent, render, screen, waitFor} from "@testing-library/react";
 import AuthLogin from "../AuthLogin";
 import {BrowserRouter} from "react-router-dom";
+import userEvent from '@testing-library/user-event'
 
 jest.mock("axios", () => ({
     __esModule: true,
@@ -11,6 +12,10 @@ jest.mock("axios", () => ({
         }),
     },
 }));
+
+beforeEach(() => {
+    localStorage.clear();
+})
 
 afterEach(() => {
     jest.clearAllMocks();
@@ -58,38 +63,15 @@ test("password input should be empty", () => {
     expect(passwordInputEl.value).toBe("");
 });
 
-test("login-button should be disabled", () => {
-    render(<BrowserRouter>
-        <AuthLogin/>
-    </BrowserRouter>);
-    const buttonEl = screen.getByTestId("login-button");
-    expect(buttonEl).toBeDisabled();
-});
-
-test("loading should not be rendered", () => {
-    render(<BrowserRouter>
-        <AuthLogin/>
-    </BrowserRouter>);
-    const buttonEl = screen.getByTestId("login-button");
-    expect(buttonEl).not.toHaveTextContent(/please wait/i);
-});
-
-test("error message should not be visible", () => {
-    render(<BrowserRouter>
-        <AuthLogin/>
-    </BrowserRouter>);
-    const errorEl = screen.getByTestId("error");
-    expect(errorEl).not.toBeVisible();
-});
-
 test("username input should change", () => {
     render(<BrowserRouter>
         <AuthLogin/>
     </BrowserRouter>);
     const usernameInputEl = screen.getByPlaceholderText(/Enter email address/i);
     const testValue = "test";
-
-    fireEvent.change(usernameInputEl, {target: {value: testValue}});
+    act(() => {
+        fireEvent.change(usernameInputEl, {target: {value: testValue}});
+    })
     expect(usernameInputEl.value).toBe(testValue);
 });
 
@@ -99,62 +81,52 @@ test("password input should change", () => {
     </BrowserRouter>);
     const passwordInputEl = screen.getByPlaceholderText(/Enter password/i);
     const testValue = "test";
-
-    fireEvent.change(passwordInputEl, {target: {value: testValue}});
+    act(() => {
+        fireEvent.change(passwordInputEl, {target: {value: testValue}});
+    })
     expect(passwordInputEl.value).toBe(testValue);
 });
 
-test("login-button should not be disabled when inputs exist", () => {
+test("Error mess valid email should show when type invalid email", async () => {
     render(<BrowserRouter>
         <AuthLogin/>
     </BrowserRouter>);
-    const buttonEl = screen.getByTestId("login-button");
     const usernameInputEl = screen.getByPlaceholderText(/Enter email address/i);
-    const passwordInputEl = screen.getByPlaceholderText(/Enter password/i);
 
-    const testValue = "test";
-
-    fireEvent.change(usernameInputEl, {target: {value: testValue}});
-    fireEvent.change(passwordInputEl, {target: {value: testValue}});
-
-    expect(buttonEl).not.toBeDisabled();
+    const email = "test";
+    await userEvent.type(usernameInputEl, email);
+    fireEvent.blur(usernameInputEl);
+    const errMess = screen.getByText(/Must be a valid email/i);
+    expect(errMess).toBeInTheDocument();
 });
 
-test("loading should be rendered when click", () => {
+test("Error mess required should show when type empty email", async () => {
     render(<BrowserRouter>
         <AuthLogin/>
     </BrowserRouter>);
-    const buttonEl = screen.getByTestId("login-button");
     const usernameInputEl = screen.getByPlaceholderText(/Enter email address/i);
-    const passwordInputEl = screen.getByPlaceholderText(/Enter password/i);
-
-    const testValue = "test";
-
-    fireEvent.change(usernameInputEl, {target: {value: testValue}});
-    fireEvent.change(passwordInputEl, {target: {value: testValue}});
-    fireEvent.click(buttonEl);
-
-    expect(buttonEl).toHaveTextContent(/please wait/i);
+    fireEvent.focus(usernameInputEl);
+    fireEvent.blur(usernameInputEl);
+    await waitFor(() => {
+        const errMess = screen.getByText(/Email is required/i);
+        expect(errMess).toBeInTheDocument();
+    })
 });
 
-test("loading should not be rendered after fetching", async () => {
+test("Error mess required should show when type empty password", async () => {
     render(<BrowserRouter>
         <AuthLogin/>
     </BrowserRouter>);
-    const buttonEl = screen.getByTestId("login-button");
-    const usernameInputEl = screen.getByPlaceholderText(/Enter email address/i);
-    const passwordInputEl = screen.getByPlaceholderText(/Enter password/i);
-
-    const testValue = "test";
-
-    fireEvent.change(usernameInputEl, {target: {value: testValue}});
-    fireEvent.change(passwordInputEl, {target: {value: testValue}});
-    fireEvent.click(buttonEl);
-
-    await waitFor(() => expect(buttonEl).not.toHaveTextContent(/please wait/i));
+    const usernameInputEl = screen.getByPlaceholderText(/Enter password/i);
+    fireEvent.focus(usernameInputEl);
+    fireEvent.blur(usernameInputEl);
+    await waitFor(() => {
+        const errMess = screen.getByText(/Password is required/i);
+        expect(errMess).toBeInTheDocument();
+    })
 });
 
-test("user should be rendered after fetching", async () => {
+test("local storage have user info after login", async () => {
     render(<BrowserRouter>
         <AuthLogin/>
     </BrowserRouter>);
@@ -163,12 +135,12 @@ test("user should be rendered after fetching", async () => {
     const passwordInputEl = screen.getByPlaceholderText(/Enter password/i);
 
     const testValue = "test";
-
-    fireEvent.change(usernameInputEl, {target: {value: testValue}});
-    fireEvent.change(passwordInputEl, {target: {value: testValue}});
-    fireEvent.click(buttonEl);
-
-    const userItem = await screen.findByText("John");
-
-    expect(userItem).toBeInTheDocument();
+    await act(() => {
+        fireEvent.change(usernameInputEl, {target: {value: testValue}});
+        fireEvent.change(passwordInputEl, {target: {value: testValue}});
+        fireEvent.click(buttonEl);
+        waitFor(() => {
+            expect(localStorage.getItem("userinfo")).not.toBeUndefined();
+        });
+    })
 });
