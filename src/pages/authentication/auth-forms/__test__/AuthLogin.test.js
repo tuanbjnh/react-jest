@@ -47,6 +47,18 @@ test("login-button should be rendered", () => {
     expect(buttonEl).toBeInTheDocument();
 });
 
+test("login-button with facebook twitter google should be rendered", () => {
+    render(<BrowserRouter>
+        <AuthLogin/>
+    </BrowserRouter>);
+    const buttonGoogle = screen.getByAltText("Google");
+    const buttonTwitter = screen.getByAltText("Twitter");
+    const buttonFacebook = screen.getByAltText("Facebook");
+    expect(buttonGoogle).toBeInTheDocument();
+    expect(buttonTwitter).toBeInTheDocument();
+    expect(buttonFacebook).toBeInTheDocument();
+});
+
 test("username input should be empty", () => {
     render(<BrowserRouter>
         <AuthLogin/>

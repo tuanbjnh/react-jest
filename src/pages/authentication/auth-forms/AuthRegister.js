@@ -94,7 +94,7 @@ const AuthRegister = () => {
                                         name="firstname"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="John"
+                                        placeholder="First Name"
                                         fullWidth
                                         error={Boolean(touched.firstname && errors.firstname)}
                                     />
@@ -117,7 +117,7 @@ const AuthRegister = () => {
                                         name="lastname"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="Doe"
+                                        placeholder="Last Name"
                                         inputProps={{}}
                                     />
                                     {touched.lastname && errors.lastname && (
@@ -138,7 +138,7 @@ const AuthRegister = () => {
                                         name="company"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="Demo Inc."
+                                        placeholder="Company"
                                         inputProps={{}}
                                     />
                                     {touched.company && errors.company && (
@@ -160,7 +160,7 @@ const AuthRegister = () => {
                                         name="email"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="demo@company.com"
+                                        placeholder="Email Address"
                                         inputProps={{}}
                                     />
                                     {touched.email && errors.email && (
@@ -198,7 +198,7 @@ const AuthRegister = () => {
                                                 </IconButton>
                                             </InputAdornment>
                                         }
-                                        placeholder="******"
+                                        placeholder="Password"
                                         inputProps={{}}
                                     />
                                     {touched.password && errors.password && (
