@@ -187,6 +187,32 @@ describe("form validation should work", () => {
             expect(errMess).toBeInTheDocument();
         })
     })
+
+    test("Form should validate when submit work",async() => {
+        render(<BrowserRouter>
+            <AuthRegister/>
+        </BrowserRouter>);
+        const passwordInput = screen.getByPlaceholderText(/Password/i);
+        const emailInput = screen.getByPlaceholderText(/Email/i);
+        const lastNameInput = screen.getByPlaceholderText(/Last Name/i);
+        const firstNameInput = screen.getByPlaceholderText(/First Name/i);
+        fireEvent.change(passwordInput, "");
+        fireEvent.change(emailInput, "");
+        fireEvent.change(lastNameInput, "");
+        fireEvent.change(firstNameInput, "");
+        const button = screen.getByText(/Create Account/i);
+        fireEvent.click(button);
+        await waitFor(() => {
+            const passwordInputMess = screen.getByText(/Password is required/i);
+            const emailInputMess = screen.getByText(/Email is required/i);
+            const lastNameInputMess = screen.getByText(/Last Name is required/i);
+            const firstNameInputMess = screen.getByText(/First Name is required/i);
+            expect(passwordInputMess).toBeInTheDocument();
+            expect(emailInputMess).toBeInTheDocument();
+            expect(lastNameInputMess).toBeInTheDocument();
+            expect(firstNameInputMess).toBeInTheDocument();
+        })
+    })
 })
 
 describe("show password strength should work",() => {
