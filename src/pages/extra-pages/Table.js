@@ -4,7 +4,7 @@ import MainCard from '../../components/MainCard';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './SamplePage.css';
+import './Table.css';
 import {Button, InputAdornment, OutlinedInput} from "@mui/material";
 import Search from "../../layout/MainLayout/Header/HeaderContent/Search";
 import {SearchOutlined} from "@ant-design/icons";
