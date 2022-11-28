@@ -5,8 +5,9 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './SamplePage.css';
-import {Button} from "@mui/material";
+import {Button, InputAdornment, OutlinedInput} from "@mui/material";
 import Search from "../../layout/MainLayout/Header/HeaderContent/Search";
+import {SearchOutlined} from "@ant-design/icons";
 
 function Table() {
     const [posts, setPosts] = useState([]);
@@ -88,18 +89,28 @@ function Table() {
     return (
         <MainCard title="Table">
             <div>
-                <input
-                    type="text"
+                <OutlinedInput
+                    size="small"
+                    id="header-search"
+                    startAdornment={
+                        <InputAdornment position="start" sx={{ mr: -0.5 }}>
+                            <SearchOutlined />
+                        </InputAdornment>
+                    }
+                    aria-describedby="header-search-text"
+                    inputProps={{
+                        'aria-label': 'weight'
+                    }}
                     placeholder="Search by title"
-                    className="search-by-title"
                     value={searchText}
                     onChange={handleChangeSearchText}
-                ></input>
+                    style={{marginBottom: '1rem'}}
+                />
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th onClick={handleChangeSort}>Title -- Sort ({sortStatus}) </th>
+                            <th style={{cursor: 'pointer'}} onClick={handleChangeSort}>Title -- Sort ({sortStatus}) </th>
                             <th>Actions</th>
                         </tr>
                     </thead>
