@@ -14,7 +14,8 @@ const areaChartOptions = {
         type: 'area',
         toolbar: {
             show: false
-        }
+        },
+        id: 'area-chart'
     },
     dataLabels: {
         enabled: false

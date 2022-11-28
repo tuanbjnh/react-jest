@@ -5,6 +5,8 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './SamplePage.css';
+import {Button} from "@mui/material";
+import Search from "../../layout/MainLayout/Header/HeaderContent/Search";
 
 function Table() {
     const [posts, setPosts] = useState([]);
@@ -107,10 +109,22 @@ function Table() {
                                 <td>{post.id}</td>
                                 <td>{post.title}</td>
                                 <td>
-                                    <Link to={`${post.id}`}>View detail</Link>
-                                    <button className="table-button-delete" onClick={() => handleRemovePost(post.id)}>
+                                    <Button
+                                        size="small"
+                                        color='primary'
+                                        variant='outlined'
+                                    >
+                                        <Link to={`${post.id}`}>View detail</Link>
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        onClick={() => handleRemovePost(post.id)}
+                                        color='error'
+                                        variant='outlined'
+                                        style={{marginLeft: '1rem'}}
+                                    >
                                         Remove
-                                    </button>
+                                    </Button>
                                 </td>
                             </tr>
                         ))}
